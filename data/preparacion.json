@@ -1,0 +1,11 @@
+{
+  "fuente": "img3.bmp",
+  "fuente_ancho": 6315, "fuente_alto": 8416,
+  "recorte": {"x": 0, "y": 1050, "lado": 6315},
+  "metodo": "promedio de area (resizeArea)",
+  "versiones": [
+    {"nombre": "img_6000", "lado": 6000, "escala": 0.950119},
+    {"nombre": "img_4000", "lado": 4000, "escala": 0.633413},
+    {"nombre": "img_2000", "lado": 2000, "escala": 0.316706}
+  ]
+}

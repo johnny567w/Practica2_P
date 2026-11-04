@@ -1,0 +1,21 @@
+bin/
+*.obj
+*.exp
+*.lib
+*.pdb
+# Imágenes en gris generadas desde data\img*.jpg con scripts\prepare_images.ps1
+data/*.pgm
+data/*.bmp
+data/preview_*.png
+# PNG a resolución completa (opcional --full-images): demasiado grandes para el repositorio
+results/images/*_full.png
+# Intermedios del informe de Word (se regeneran con build_report.js y build_docx.ps1)
+report/word/
+report/figs/png/
+~$*
+# Fotos que ya no se usan como entrada (solo img3.jpg)
+data/img1.jpg
+data/img2.jpg
+# Copia de la plantilla editada a mano
+report/plantilla_editada.docx
+report/latex/
