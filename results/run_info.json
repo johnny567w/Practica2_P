@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04 14:56:29",
+  "repetitions": 10,
+  "cpu_warmup_runs": 1,
+  "gpu_warmup_ms": 2000,
+  "default_threads_per_block": 256,
+  "power_start": {"ac": true, "battery_pct": 88},
+  "power_end": {"ac": true, "battery_pct": 90},
+  "base_image": "img_4000",
+  "images": [
+    {"name": "img_2000", "width": 2000, "height": 2000, "pixels": 4000000},
+    {"name": "img_4000", "width": 4000, "height": 4000, "pixels": 16000000},
+    {"name": "img_6000", "width": 6000, "height": 6000, "pixels": 36000000}
+  ],
+  "detail_crops": {
+    "img_2000": {"x": 1222, "y": 322, "size": 512},
+    "img_4000": {"x": 2700, "y": 900, "size": 512},
+    "img_6000": {"x": 4178, "y": 1478, "size": 512}
+  },
+  "gpu": {"name": "NVIDIA GeForce GTX 1650", "compute_capability": "7.5", "multiprocessors": 14, "global_memory_mb": 4095, "max_threads_per_block": 1024, "max_threads_per_sm": 1024, "warp_size": 32, "l2_cache_kb": 1024, "memory_bus_bits": 128, "driver_cuda_version": "12.5", "runtime_cuda_version": "12.5"}
+}

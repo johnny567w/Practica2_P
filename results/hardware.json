@@ -1,0 +1,16 @@
+﻿{
+    "cpu":  "AMD Ryzen 7 5800HS with Radeon Graphics",
+    "cpu_cores":  8,
+    "cpu_threads":  16,
+    "cpu_base_mhz":  3201,
+    "ram_gb":  15.4,
+    "gpu":  "NVIDIA GeForce GTX 1650",
+    "gpu_vram_mb":  4096,
+    "gpu_driver":  "555.97",
+    "gpu_max_sm_mhz":  1740,
+    "gpu_max_mem_mhz":  5001,
+    "os":  "Microsoft Windows 11 Pro 10.0.26200",
+    "cuda_toolkit":  "12.5, V12.5.82",
+    "host_compiler":  "Compilador de optimización de C/C++ de Microsoft (R) versión 19.44.35229 para x64",
+    "node":  "v24.20.0"
+}
