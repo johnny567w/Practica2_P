@@ -20,15 +20,31 @@
 namespace {
 
 FILE* logFile = nullptr;
-FILE* csvCases = nullptr;
 FILE* csvMatrix = nullptr;
 int failures = 0;
+bool verbose = false;  // con --manual el detalle tambien se muestra en la terminal
 
+// out(): detalle caso por caso, va al archivo de log (results/validacion_pruebas.txt)
 void out(const char* fmt, ...) {
+    va_list a;
+    if (verbose) {
+        va_start(a, fmt);
+        vprintf(fmt, a);
+        va_end(a);
+    }
+    if (!logFile) return;
+    va_start(a, fmt);
+    vfprintf(logFile, fmt, a);
+    va_end(a);
+}
+
+// say(): resumen corto, se muestra en la terminal y tambien queda en el log
+void say(const char* fmt, ...) {
     va_list a;
     va_start(a, fmt);
     vprintf(fmt, a);
     va_end(a);
+    fflush(stdout);
     if (logFile) {
         va_start(a, fmt);
         vfprintf(logFile, fmt, a);
@@ -52,13 +68,8 @@ void printMatrix(const char* title, const std::vector<float>& m, int w, int h) {
 
 bool recordCase(int test, const std::string& source, int w, int h, const Mask& m, const char* maskName, int tpb,
                 int blocks, const ErrorStats& s, double tol) {
-    const long long n = (long long)w * h;
-    const bool ok = s.nonFinite == 0 && s.maxAbs <= tol;
-    if (csvCases)
-        fprintf(csvCases, "%d,%s,%dx%d,%lld,%s,%dx%d,%d,%d,%lld,%s,%.9g,%.9g,%.9g,%zu,%s\n", test, source.c_str(), w, h, n,
-                maskName, m.k, m.k, tpb, blocks, n - (long long)(blocks - 1) * tpb, n % tpb ? "no" : "si", s.maxAbs,
-                s.meanAbs, tol, s.nonFinite, ok ? "OK" : "FALLA");
-    return ok;
+    (void)test, (void)source, (void)w, (void)h, (void)m, (void)maskName, (void)tpb, (void)blocks;
+    return s.nonFinite == 0 && s.maxAbs <= tol;
 }
 
 struct Expected {
@@ -91,12 +102,12 @@ void runSmallMatrix(GpuConvolver& gpu, const std::string& source, const std::vec
             float vc = cpu[e.row * w + e.col], vg = gpuOut[e.row * w + e.col];
             out("    (%d,%d): manual %.4f | CPU %.4f | GPU %.4f   <- %s\n", e.row, e.col, e.value, vc, vg, e.how);
             char what[128];
-            snprintf(what, sizeof(what), "posición (%d,%d) coincide con el cálculo manual", e.row, e.col);
+            snprintf(what, sizeof(what), "posicion (%d,%d) coincide con el calculo manual", e.row, e.col);
             check(std::fabs(vc - e.value) < 1e-4 && std::fabs(vg - e.value) < 1e-4, what);
         }
         ErrorStats s = compareOutputs(cpu.data(), gpuOut.data(), cpu.size());
         double tol = toleranceFor(c.mask, maxIn);
-        out("    CPU vs GPU en toda la matriz: error máx %.3g, medio %.3g, no escritos %zu\n", s.maxAbs, s.meanAbs,
+        out("    CPU vs GPU en toda la matriz: error max %.3g, medio %.3g, no escritos %zu\n", s.maxAbs, s.meanAbs,
             s.nonFinite);
         check(recordCase(1, source, w, h, c.mask, c.name, 128, t.blocks, s, tol), "GPU = CPU dentro de la tolerancia");
         if (csvMatrix)
@@ -109,7 +120,7 @@ void runSmallMatrix(GpuConvolver& gpu, const std::string& source, const std::vec
 
 std::vector<ManualCase> manualCases(bool withExpected) {
     std::vector<ManualCase> cases = {
-        {"figura1", "Máscara de la Figura 1 [-2 -1 0; -1 1 1; 0 1 2]",
+        {"figura1", "Mascara de la Figura 1 [-2 -1 0; -1 1 1; 0 1 2]",
          makeCustomMask(3, {-2, -1, 0, -1, 1, 1, 0, 1, 2}),
          {{1, 1, 78, "35(-2)+40(-1)+41(0)+40(-1)+40(1)+42(1)+42(0)+46(1)+50(2) = 78"},
           {1, 2, 87, "40(-2)+41(-1)+45(0)+40(-1)+42(1)+46(1)+46(0)+50(1)+55(2) = 87"},
@@ -131,7 +142,7 @@ std::vector<ManualCase> manualCases(bool withExpected) {
 }
 
 void manualTest(GpuConvolver& gpu) {
-    out("== Prueba 1: cálculo manual (matriz 4x5, valores de la Figura 1) ==\n");
+    out("== Prueba 1: calculo manual (matriz 4x5, valores de la Figura 1) ==\n");
 
     const std::vector<float> in = {35, 40, 41, 45, 50,
                                    40, 40, 42, 46, 52,
@@ -167,7 +178,7 @@ bool readMatrix(const std::string& path, std::vector<float>& m, int& w, int& h) 
             char* end = nullptr;
             float v = std::strtof(tok.c_str(), &end);
             if (*end != '\0') {
-                fprintf(stderr, "%s: valor no numérico '%s' en la fila %d\n", path.c_str(), tok.c_str(), h + 1);
+                fprintf(stderr, "%s: valor no numerico '%s' en la fila %d\n", path.c_str(), tok.c_str(), h + 1);
                 return false;
             }
             row.push_back(v);
@@ -198,7 +209,8 @@ void customMatrixTest(GpuConvolver& gpu, const std::string& path) {
 }
 
 void nonMultipleTest(GpuConvolver& gpu) {
-    out("\n== Prueba 2: dimensiones que no son múltiplo de los hilos por bloque ==\n");
+    out("\n== Prueba 1: dimensiones que no son multiplo de los hilos por bloque ==\n");
+    int total = 0, okCount = 0;
     struct Dim {
         int w, h;
     };
@@ -207,8 +219,8 @@ void nonMultipleTest(GpuConvolver& gpu) {
     std::vector<Mask> masks = {makeMask(FilterType::Average, 3), makeMask(FilterType::Average, 9),
                                makeMask(FilterType::Average, 21), makeMask(FilterType::Sharpen),
                                makeMask(FilterType::Laplacian)};
-    out("  %-11s %9s %-10s %-6s %6s %8s %12s %12s %12s %6s\n", "dimensión", "píxeles", "filtro", "másc.", "hilos",
-        "bloques", "err. máx", "err. medio", "tolerancia", "res.");
+    out("  %-11s %9s %-10s %-6s %6s %8s %12s %12s %12s %6s\n", "dimension", "pixeles", "filtro", "masc.", "hilos",
+        "bloques", "err. max", "err. medio", "tolerancia", "res.");
     uint32_t seed = 12345;
     for (const Dim& d : dims) {
         const size_t n = (size_t)d.w * d.h;
@@ -226,18 +238,22 @@ void nonMultipleTest(GpuConvolver& gpu) {
                 double tol = toleranceFor(m);
                 bool ok = recordCase(2, "aleatoria", d.w, d.h, m, filterName(m.type), tpb, t.blocks, s, tol);
                 if (!ok) ++failures;
+                ++total, okCount += ok;
                 char dim[32];
                 snprintf(dim, sizeof(dim), "%dx%d", d.w, d.h);
                 out("  %-11s %9zu %-10s %2dx%-3d %6d %8d %12.3g %12.3g %12.3g %6s%s\n", dim, n, filterName(m.type), m.k,
                     m.k, tpb, t.blocks, s.maxAbs, s.meanAbs, tol, ok ? "OK" : "FALLA",
-                    n % tpb ? "" : "  (múltiplo)");
+                    n % tpb ? "" : "  (multiplo)");
             }
         }
     }
+    say("      Imagenes de tamanos que no se dividen exacto en bloques: %3d de %3d casos iguales a la CPU\n", okCount,
+        total);
 }
 
 void realImagesTest(const std::vector<std::string>& paths) {
-    out("\n== Prueba 3: imágenes de los experimentos (2000x2000, 4000x4000, 6000x6000) ==\n");
+    out("\n== Prueba 2: imagenes de los experimentos (2000x2000, 4000x4000, 6000x6000) ==\n");
+    int total = 0, okCount = 0;
     const int threads[] = {128, 256, 512};
     for (const std::string& path : paths) {
         GrayImage img;
@@ -249,13 +265,13 @@ void realImagesTest(const std::vector<std::string>& paths) {
         const size_t n = (size_t)w * h;
         std::string name = path.substr(path.find_last_of("/\\") + 1);
         name = name.substr(0, name.find_last_of('.'));
-        out("\n  %s: %dx%d = %zu píxeles\n", name.c_str(), w, h, n);
+        out("\n  %s: %dx%d = %zu pixeles\n", name.c_str(), w, h, n);
         for (int tpb : threads) {
             size_t blocks = (n + tpb - 1) / tpb;
             if (n % tpb == 0)
-                out("    %3d hilos/bloque: %zu bloques, múltiplo exacto (todos los bloques completos)\n", tpb, blocks);
+                out("    %3d hilos/bloque: %zu bloques, multiplo exacto (todos los bloques completos)\n", tpb, blocks);
             else
-                out("    %3d hilos/bloque: %zu bloques, NO es múltiplo: el último bloque usa %zu de %d hilos y %zu "
+                out("    %3d hilos/bloque: %zu bloques, NO es multiplo: el ultimo bloque usa %zu de %d hilos y %zu "
                     "salen por el if\n",
                     tpb, blocks, n % tpb, tpb, tpb - n % tpb);
         }
@@ -263,7 +279,7 @@ void realImagesTest(const std::vector<std::string>& paths) {
         img.pixels.clear();
         img.pixels.shrink_to_fit();
         GpuConvolver gpu(n, 3);
-        out("  %-10s %-6s %6s %8s %12s %12s %12s %10s %6s\n", "filtro", "másc.", "hilos", "bloques", "err. máx",
+        out("  %-10s %-6s %6s %8s %12s %12s %12s %10s %6s\n", "filtro", "masc.", "hilos", "bloques", "err. max",
             "err. medio", "tolerancia", "no escr.", "res.");
         for (FilterType type : {FilterType::Average, FilterType::Sharpen, FilterType::Laplacian}) {
             Mask m = makeMask(type, 3);
@@ -275,12 +291,15 @@ void realImagesTest(const std::vector<std::string>& paths) {
                 double tol = toleranceFor(m);
                 bool ok = recordCase(3, name, w, h, m, filterName(type), tpb, t.blocks, s, tol);
                 if (!ok) ++failures;
+                ++total, okCount += ok;
                 out("  %-10s %2dx%-3d %6d %8d %12.3g %12.3g %12.3g %10zu %6s%s\n", filterName(type), m.k, m.k, tpb,
                     t.blocks, s.maxAbs, s.meanAbs, tol, s.nonFinite, ok ? "OK" : "FALLA",
-                    n % tpb ? "" : "  (múltiplo)");
+                    n % tpb ? "" : "  (multiplo)");
             }
         }
     }
+    say("      Las 3 imagenes de los experimentos (2000, 4000, 6000):    %3d de %3d casos iguales a la CPU\n", okCount,
+        total);
 }
 
 std::vector<std::string> splitList(const std::string& s) {
@@ -297,6 +316,9 @@ std::vector<std::string> splitList(const std::string& s) {
 int main(int argc, char** argv) {
     std::string logPath = "results/validacion_pruebas.txt", matrixPath;
     std::vector<std::string> images = {"data/img_2000.pgm", "data/img_4000.pgm", "data/img_6000.pgm"};
+    bool manual = false;  // la prueba manual (matrices pequenas) solo se ejecuta con --manual
+    for (int i = 1; i < argc; ++i)
+        if (std::string(argv[i]) == "--manual") manual = true;
     for (int i = 1; i + 1 < argc; ++i) {
         std::string a = argv[i];
         if (a == "--log") logPath = argv[++i];
@@ -305,27 +327,25 @@ int main(int argc, char** argv) {
     }
     std::string dir = logPath.substr(0, logPath.find_last_of("/\\") + 1);
     logFile = fopen(logPath.c_str(), "w");
-    if (!logFile) fprintf(stderr, "Aviso: no se pudo crear %s; solo se imprimirá en consola\n", logPath.c_str());
-    csvCases = fopen((dir + "validacion_pruebas.csv").c_str(), "w");
-    csvMatrix = fopen((dir + "matriz_salida.csv").c_str(), "w");
-    if (csvCases)
-        fprintf(csvCases,
-                "prueba,origen,dimension,pixeles,filtro,mascara,hilos_por_bloque,bloques,hilos_ultimo_bloque,"
-                "multiplo,error_abs_max,error_abs_medio,tolerancia,pixeles_no_escritos,resultado\n");
+    if (!logFile) fprintf(stderr, "Aviso: no se pudo crear %s\n", logPath.c_str());
+    verbose = manual;
+    if (manual) csvMatrix = fopen((dir + "matriz_salida.csv").c_str(), "w");
     if (csvMatrix) fprintf(csvMatrix, "matriz,mascara,fila,columna,entrada,cpu,gpu\n");
 
     gpuInit();
     {
         GpuConvolver gpu((size_t)2000 * 2001, 21);
-        manualTest(gpu);
-        if (!matrixPath.empty()) customMatrixTest(gpu, matrixPath);
+        if (manual) {
+            manualTest(gpu);
+            if (!matrixPath.empty()) customMatrixTest(gpu, matrixPath);
+        }
         nonMultipleTest(gpu);
     }
     realImagesTest(images);
 
-    out("\nResultado: %s (%d fallas)\n", failures ? "HAY FALLAS" : "TODAS LAS PRUEBAS PASARON", failures);
+    say("      Resultado: %s\n", failures ? "HAY FALLAS (revise results\\validacion_pruebas.txt)"
+                                          : "la GPU da el mismo resultado que la CPU en todos los casos");
     if (logFile) fclose(logFile);
-    if (csvCases) fclose(csvCases);
     if (csvMatrix) fclose(csvMatrix);
     return failures ? 1 : 0;
 }

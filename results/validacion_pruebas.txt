@@ -1,0 +1,128 @@
+
+== Prueba 1: dimensiones que no son multiplo de los hilos por bloque ==
+  dimension     pixeles filtro     masc.   hilos  bloques     err. max   err. medio   tolerancia   res.
+  1001x777       777777 media       3x3      128     6077     3.05e-05     2.95e-06     0.000274     OK
+  1001x777       777777 media       3x3      256     3039     3.05e-05     2.95e-06     0.000274     OK
+  1001x777       777777 media       3x3      512     1520     3.05e-05     2.95e-06     0.000274     OK
+  1001x777       777777 media       9x9      128     6077     4.58e-05     3.76e-06      0.00246     OK
+  1001x777       777777 media       9x9      256     3039     4.58e-05     3.76e-06      0.00246     OK
+  1001x777       777777 media       9x9      512     1520     4.58e-05     3.76e-06      0.00246     OK
+  1001x777       777777 media      21x21     128     6077      6.1e-05     5.35e-06       0.0134     OK
+  1001x777       777777 media      21x21     256     3039      6.1e-05     5.35e-06       0.0134     OK
+  1001x777       777777 media      21x21     512     1520      6.1e-05     5.35e-06       0.0134     OK
+  1001x777       777777 nitidez     3x3      128     6077            0            0      0.00246     OK
+  1001x777       777777 nitidez     3x3      256     3039            0            0      0.00246     OK
+  1001x777       777777 nitidez     3x3      512     1520            0            0      0.00246     OK
+  1001x777       777777 laplaciano  3x3      128     6077            0            0      0.00219     OK
+  1001x777       777777 laplaciano  3x3      256     3039            0            0      0.00219     OK
+  1001x777       777777 laplaciano  3x3      512     1520            0            0      0.00219     OK
+  333x1             333 media       3x3      128        3     7.63e-06     9.82e-07     0.000274     OK
+  333x1             333 media       3x3      256        2     7.63e-06     9.82e-07     0.000274     OK
+  333x1             333 media       3x3      512        1     7.63e-06     9.82e-07     0.000274     OK
+  333x1             333 media       9x9      128        3     1.91e-06     3.49e-07      0.00246     OK
+  333x1             333 media       9x9      256        2     1.91e-06     3.49e-07      0.00246     OK
+  333x1             333 media       9x9      512        1     1.91e-06     3.49e-07      0.00246     OK
+  333x1             333 media      21x21     128        3     1.43e-06      1.7e-07       0.0134     OK
+  333x1             333 media      21x21     256        2     1.43e-06      1.7e-07       0.0134     OK
+  333x1             333 media      21x21     512        1     1.43e-06      1.7e-07       0.0134     OK
+  333x1             333 nitidez     3x3      128        3            0            0      0.00246     OK
+  333x1             333 nitidez     3x3      256        2            0            0      0.00246     OK
+  333x1             333 nitidez     3x3      512        1            0            0      0.00246     OK
+  333x1             333 laplaciano  3x3      128        3            0            0      0.00219     OK
+  333x1             333 laplaciano  3x3      256        2            0            0      0.00219     OK
+  333x1             333 laplaciano  3x3      512        1            0            0      0.00219     OK
+  1x517             517 media       3x3      128        5     7.63e-06     7.69e-07     0.000274     OK
+  1x517             517 media       3x3      256        3     7.63e-06     7.69e-07     0.000274     OK
+  1x517             517 media       3x3      512        2     7.63e-06     7.69e-07     0.000274     OK
+  1x517             517 media       9x9      128        5     3.81e-06     4.11e-07      0.00246     OK
+  1x517             517 media       9x9      256        3     3.81e-06     4.11e-07      0.00246     OK
+  1x517             517 media       9x9      512        2     3.81e-06     4.11e-07      0.00246     OK
+  1x517             517 media      21x21     128        5     9.54e-07     1.77e-07       0.0134     OK
+  1x517             517 media      21x21     256        3     9.54e-07     1.77e-07       0.0134     OK
+  1x517             517 media      21x21     512        2     9.54e-07     1.77e-07       0.0134     OK
+  1x517             517 nitidez     3x3      128        5            0            0      0.00246     OK
+  1x517             517 nitidez     3x3      256        3            0            0      0.00246     OK
+  1x517             517 nitidez     3x3      512        2            0            0      0.00246     OK
+  1x517             517 laplaciano  3x3      128        5            0            0      0.00219     OK
+  1x517             517 laplaciano  3x3      256        3            0            0      0.00219     OK
+  1x517             517 laplaciano  3x3      512        2            0            0      0.00219     OK
+  4097x3          12291 media       3x3      128       97     3.05e-05     2.29e-06     0.000274     OK
+  4097x3          12291 media       3x3      256       49     3.05e-05     2.29e-06     0.000274     OK
+  4097x3          12291 media       3x3      512       25     3.05e-05     2.29e-06     0.000274     OK
+  4097x3          12291 media       9x9      128       97     1.14e-05     1.26e-06      0.00246     OK
+  4097x3          12291 media       9x9      256       49     1.14e-05     1.26e-06      0.00246     OK
+  4097x3          12291 media       9x9      512       25     1.14e-05     1.26e-06      0.00246     OK
+  4097x3          12291 media      21x21     128       97     3.81e-06        5e-07       0.0134     OK
+  4097x3          12291 media      21x21     256       49     3.81e-06        5e-07       0.0134     OK
+  4097x3          12291 media      21x21     512       25     3.81e-06        5e-07       0.0134     OK
+  4097x3          12291 nitidez     3x3      128       97            0            0      0.00246     OK
+  4097x3          12291 nitidez     3x3      256       49            0            0      0.00246     OK
+  4097x3          12291 nitidez     3x3      512       25            0            0      0.00246     OK
+  4097x3          12291 laplaciano  3x3      128       97            0            0      0.00219     OK
+  4097x3          12291 laplaciano  3x3      256       49            0            0      0.00219     OK
+  4097x3          12291 laplaciano  3x3      512       25            0            0      0.00219     OK
+  2000x2001     4002000 media       3x3      128    31266     4.58e-05     2.96e-06     0.000274     OK
+  2000x2001     4002000 media       3x3      256    15633     4.58e-05     2.96e-06     0.000274     OK
+  2000x2001     4002000 media       3x3      512     7817     4.58e-05     2.96e-06     0.000274     OK
+  2000x2001     4002000 media       9x9      128    31266     4.58e-05     3.81e-06      0.00246     OK
+  2000x2001     4002000 media       9x9      256    15633     4.58e-05     3.81e-06      0.00246     OK
+  2000x2001     4002000 media       9x9      512     7817     4.58e-05     3.81e-06      0.00246     OK
+  2000x2001     4002000 media      21x21     128    31266      6.1e-05     5.35e-06       0.0134     OK
+  2000x2001     4002000 media      21x21     256    15633      6.1e-05     5.35e-06       0.0134     OK
+  2000x2001     4002000 media      21x21     512     7817      6.1e-05     5.35e-06       0.0134     OK
+  2000x2001     4002000 nitidez     3x3      128    31266            0            0      0.00246     OK
+  2000x2001     4002000 nitidez     3x3      256    15633            0            0      0.00246     OK
+  2000x2001     4002000 nitidez     3x3      512     7817            0            0      0.00246     OK
+  2000x2001     4002000 laplaciano  3x3      128    31266            0            0      0.00219     OK
+  2000x2001     4002000 laplaciano  3x3      256    15633            0            0      0.00219     OK
+  2000x2001     4002000 laplaciano  3x3      512     7817            0            0      0.00219     OK
+      Imagenes de tamanos que no se dividen exacto en bloques:  75 de  75 casos iguales a la CPU
+
+== Prueba 2: imagenes de los experimentos (2000x2000, 4000x4000, 6000x6000) ==
+
+  img_2000: 2000x2000 = 4000000 pixeles
+    128 hilos/bloque: 31250 bloques, multiplo exacto (todos los bloques completos)
+    256 hilos/bloque: 15625 bloques, multiplo exacto (todos los bloques completos)
+    512 hilos/bloque: 7813 bloques, NO es multiplo: el ultimo bloque usa 256 de 512 hilos y 256 salen por el if
+  filtro     masc.   hilos  bloques     err. max   err. medio   tolerancia   no escr.   res.
+  media       3x3      128    31250     4.58e-05      2.2e-06     0.000274          0     OK  (multiplo)
+  media       3x3      256    15625     4.58e-05      2.2e-06     0.000274          0     OK  (multiplo)
+  media       3x3      512     7813     4.58e-05      2.2e-06     0.000274          0     OK
+  nitidez     3x3      128    31250            0            0      0.00246          0     OK  (multiplo)
+  nitidez     3x3      256    15625            0            0      0.00246          0     OK  (multiplo)
+  nitidez     3x3      512     7813            0            0      0.00246          0     OK
+  laplaciano  3x3      128    31250            0            0      0.00219          0     OK  (multiplo)
+  laplaciano  3x3      256    15625            0            0      0.00219          0     OK  (multiplo)
+  laplaciano  3x3      512     7813            0            0      0.00219          0     OK
+
+  img_4000: 4000x4000 = 16000000 pixeles
+    128 hilos/bloque: 125000 bloques, multiplo exacto (todos los bloques completos)
+    256 hilos/bloque: 62500 bloques, multiplo exacto (todos los bloques completos)
+    512 hilos/bloque: 31250 bloques, multiplo exacto (todos los bloques completos)
+  filtro     masc.   hilos  bloques     err. max   err. medio   tolerancia   no escr.   res.
+  media       3x3      128   125000     4.58e-05     2.19e-06     0.000274          0     OK  (multiplo)
+  media       3x3      256    62500     4.58e-05     2.19e-06     0.000274          0     OK  (multiplo)
+  media       3x3      512    31250     4.58e-05     2.19e-06     0.000274          0     OK  (multiplo)
+  nitidez     3x3      128   125000            0            0      0.00246          0     OK  (multiplo)
+  nitidez     3x3      256    62500            0            0      0.00246          0     OK  (multiplo)
+  nitidez     3x3      512    31250            0            0      0.00246          0     OK  (multiplo)
+  laplaciano  3x3      128   125000            0            0      0.00219          0     OK  (multiplo)
+  laplaciano  3x3      256    62500            0            0      0.00219          0     OK  (multiplo)
+  laplaciano  3x3      512    31250            0            0      0.00219          0     OK  (multiplo)
+
+  img_6000: 6000x6000 = 36000000 pixeles
+    128 hilos/bloque: 281250 bloques, multiplo exacto (todos los bloques completos)
+    256 hilos/bloque: 140625 bloques, multiplo exacto (todos los bloques completos)
+    512 hilos/bloque: 70313 bloques, NO es multiplo: el ultimo bloque usa 256 de 512 hilos y 256 salen por el if
+  filtro     masc.   hilos  bloques     err. max   err. medio   tolerancia   no escr.   res.
+  media       3x3      128   281250     4.58e-05     2.18e-06     0.000274          0     OK  (multiplo)
+  media       3x3      256   140625     4.58e-05     2.18e-06     0.000274          0     OK  (multiplo)
+  media       3x3      512    70313     4.58e-05     2.18e-06     0.000274          0     OK
+  nitidez     3x3      128   281250            0            0      0.00246          0     OK  (multiplo)
+  nitidez     3x3      256   140625            0            0      0.00246          0     OK  (multiplo)
+  nitidez     3x3      512    70313            0            0      0.00246          0     OK
+  laplaciano  3x3      128   281250            0            0      0.00219          0     OK  (multiplo)
+  laplaciano  3x3      256   140625            0            0      0.00219          0     OK  (multiplo)
+  laplaciano  3x3      512    70313            0            0      0.00219          0     OK
+      Las 3 imagenes de los experimentos (2000, 4000, 6000):     27 de  27 casos iguales a la CPU
+      Resultado: la GPU da el mismo resultado que la CPU en todos los casos

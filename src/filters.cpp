@@ -10,7 +10,7 @@ Mask makeMask(FilterType type, int k) {
     switch (type) {
         case FilterType::Average:
             if (k < 1 || k % 2 == 0) {
-                fprintf(stderr, "El tamaño de la máscara de media debe ser impar (k=%d)\n", k);
+                fprintf(stderr, "El tamano de la mascara de media debe ser impar (k=%d)\n", k);
                 std::exit(1);
             }
             m.k = k;

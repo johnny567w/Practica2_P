@@ -90,7 +90,7 @@ bool readPGM(const std::string& path, GrayImage& img) {
     std::string magic, sw, sh, smax;
     bool ok = readToken(f, magic) && readToken(f, sw) && readToken(f, sh) && readToken(f, smax);
     if (!ok || (magic != "P5" && magic != "P2")) {
-        fprintf(stderr, "%s no es un PGM válido\n", path.c_str());
+        fprintf(stderr, "%s no es un PGM valido\n", path.c_str());
         fclose(f);
         return false;
     }
@@ -127,7 +127,7 @@ bool readBMP(const std::string& path, GrayImage& img) {
     }
     unsigned char fh[14], ih[40];
     if (fread(fh, 1, 14, f) != 14 || fh[0] != 'B' || fh[1] != 'M' || fread(ih, 1, 40, f) != 40) {
-        fprintf(stderr, "%s no es un BMP válido\n", path.c_str());
+        fprintf(stderr, "%s no es un BMP valido\n", path.c_str());
         fclose(f);
         return false;
     }
@@ -141,7 +141,7 @@ bool readBMP(const std::string& path, GrayImage& img) {
     bool topDown = hRaw < 0;
     int h = topDown ? -hRaw : hRaw;
     if (w <= 0 || h <= 0 || (bpp != 8 && bpp != 24 && bpp != 32) || (compression != 0 && compression != 3)) {
-        fprintf(stderr, "%s: BMP no soportado (bpp=%d, compresión=%u)\n", path.c_str(), bpp, compression);
+        fprintf(stderr, "%s: BMP no soportado (bpp=%d, compresion=%u)\n", path.c_str(), bpp, compression);
         fclose(f);
         return false;
     }

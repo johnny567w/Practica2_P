@@ -60,7 +60,7 @@ GpuTimes GpuConvolver::run(const float* hostIn, float* hostOut, int w, int h, co
                            int threadsPerBlock) {
     const size_t n = (size_t)w * h;
     if (n > maxPixels_ || k > maxK_) {
-        fprintf(stderr, "GpuConvolver: imagen o máscara mayores que la memoria reservada\n");
+        fprintf(stderr, "GpuConvolver: imagen o mascara mayores que la memoria reservada\n");
         std::exit(1);
     }
     const size_t bytes = n * sizeof(float);

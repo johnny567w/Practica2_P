@@ -6,6 +6,7 @@
   "versiones": [
     {"nombre": "img_6000", "lado": 6000, "escala": 0.950119},
     {"nombre": "img_4000", "lado": 4000, "escala": 0.633413},
-    {"nombre": "img_2000", "lado": 2000, "escala": 0.316706}
+    {"nombre": "img_2000", "lado": 2000, "escala": 0.316706},
+    {"nombre": "img_500", "lado": 500, "escala": 0.079177}
   ]
 }

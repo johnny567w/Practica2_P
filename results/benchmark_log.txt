@@ -1,0 +1,39 @@
+  Cada prueba se mide 10 veces y se muestra la mediana. Tiempos en milisegundos (ms).
+  Acel.calc  = cuantas veces mas rapida es la GPU solo calculando      (CPU / GPU calc)
+  Acel.total = cuantas veces mas rapida contando las copias de datos  (CPU / GPU total)
+  Igual      = la GPU dio el mismo resultado que la CPU
+
+  EXPERIMENTO 1 - Tipo de filtro (imagen 4000x4000, 256 hilos por bloque)
+  Filtro             CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
+  ---------------------------------------------------------------------------------------
+  media 3x3            134.44         2.530         22.45       53.1x        6.0x      SI
+  nitidez 3x3          156.53         2.545         23.17       61.5x        6.8x      SI
+  laplaciano 3x3       153.43         2.555         24.76       60.1x        6.2x      SI
+
+  EXPERIMENTO 2 - Tamano de la imagen (media 9x9, 256 hilos por bloque)
+  Imagen             CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
+  ---------------------------------------------------------------------------------------
+  2000x2000            242.14         2.138          7.31      113.3x       33.1x      SI
+  4000x4000            934.16         9.321         31.49      100.2x       29.7x      SI
+  6000x6000           2538.63        19.340         69.17      131.3x       36.7x      SI
+
+  EXPERIMENTO 3 - Tamano de la mascara (imagen 4000x4000, 256 hilos por bloque)
+  Mascara            CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
+  ---------------------------------------------------------------------------------------
+  media 3x3            177.37         2.542         22.84       69.8x        7.8x      SI
+  media 9x9           1089.19         8.527         28.92      127.7x       37.7x      SI
+  media 21x21         6889.90        44.142         71.04      156.1x       97.0x      SI
+
+  EXPERIMENTO 4 - Hilos por bloque (media 9x9, imagen 4000x4000)
+  Hilos/bloque       CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
+  ---------------------------------------------------------------------------------------
+  128 hilos           1203.29         8.655         29.01      139.0x       41.5x      SI
+  256 hilos           1203.29         8.621         29.13      139.6x       41.3x      SI
+  512 hilos           1203.29        13.597         52.83       88.5x       22.8x      SI
+
+  RESUMEN
+  La GPU fue entre 53.1 y 156.1 veces mas rapida que la CPU solo calculando,
+  y entre 6.0 y 97.0 veces mas rapida contando las copias de datos.
+  En todas las pruebas la GPU dio el mismo resultado que la CPU.
+
+  Guardado en: results/benchmark_log.txt (este resumen) y results/tiempos_crudos.csv (todas las repeticiones)

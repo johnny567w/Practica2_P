@@ -32,11 +32,12 @@ int main(int argc, char** argv) {
     const int x0 = (src.width - side) / 2, y0 = (src.height - side) / 2;
     printf("Fuente %s: %dx%d -> recorte cuadrado centrado de %dx%d en (x=%d, y=%d)\n", source.c_str(), src.width,
            src.height, side, side, x0, y0);
+    // Si la foto es mas pequena que alguna version pedida, se amplia (cada pixel se repite): la imagen
+    // pierde nitidez, pero tiene el numero de pixeles pedido, que es lo que importa para medir tiempos.
     for (int s : sizes)
-        if (s > side) {
-            fprintf(stderr, "La foto es demasiado pequeña: el lado menor (%d) no alcanza para %dx%d sin ampliar\n", side, s, s);
-            return 1;
-        }
+        if (s > side)
+            printf("ADVERTENCIA: la foto mide %d px de lado (recortada); la version de %dx%d se obtiene ampliandola\n",
+                   side, s, s);
     const GrayImage square = cropImage(src, x0, y0, side, side);
     src = GrayImage();
 
@@ -53,12 +54,12 @@ int main(int argc, char** argv) {
         if (!writePGM(outDir + "/" + name + ".pgm", v)) return 1;
         writePNG(outDir + "/preview_" + name + ".png", downscaleBox(v, 800));
         const long long n = (long long)s * s;
-        printf("  %s/%s.pgm: %dx%d = %lld píxeles (escala %.4f)\n", outDir.c_str(), name.c_str(), s, s, n, (double)s / side);
+        printf("  %s/%s.pgm: %dx%d = %lld pixeles (escala %.4f)\n", outDir.c_str(), name.c_str(), s, s, n, (double)s / side);
         for (int tpb : {128, 256, 512}) {
             long long rest = n % tpb;
             printf("      %3d hilos/bloque: %lld bloques%s\n", tpb, (n + tpb - 1) / tpb,
-                   rest ? (", NO es múltiplo: el último bloque usa " + std::to_string(rest) + " de " + std::to_string(tpb) + " hilos").c_str()
-                        : ", múltiplo exacto");
+                   rest ? (", NO es multiplo: el ultimo bloque usa " + std::to_string(rest) + " de " + std::to_string(tpb) + " hilos").c_str()
+                        : ", multiplo exacto");
         }
         snprintf(buf, sizeof(buf), "%s\n    {\"nombre\": \"%s\", \"lado\": %d, \"escala\": %.6f}", i ? "," : "", name.c_str(), s,
                  (double)s / side);

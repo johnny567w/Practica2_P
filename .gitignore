@@ -3,19 +3,14 @@ bin/
 *.exp
 *.lib
 *.pdb
-# Imágenes en gris generadas desde data\img*.jpg con scripts\prepare_images.ps1
+~$*
+# Imagenes en gris generadas desde data\img3.jpg con scripts\prepare_images.ps1
 data/*.pgm
 data/*.bmp
 data/preview_*.png
-# PNG a resolución completa (opcional --full-images): demasiado grandes para el repositorio
-results/images/*_full.png
-# Intermedios del informe de Word (se regeneran con build_report.js y build_docx.ps1)
-report/word/
-report/figs/png/
-~$*
-# Fotos que ya no se usan como entrada (solo img3.jpg)
-data/img1.jpg
-data/img2.jpg
-# Copia de la plantilla editada a mano
-report/plantilla_editada.docx
-report/latex/
+# Imagenes de salida de los filtros (se regeneran al ejecutar run_all.bat)
+results/images/
+
+# Imagenes de salida de la version Python (se regeneran con run_python.bat)
+results/python/images/
+__pycache__/

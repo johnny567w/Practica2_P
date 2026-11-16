@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <algorithm>
+#include <cstdarg>
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
@@ -49,7 +50,35 @@ const int kDefaultThreads = 256;
 
 Options opt;
 FILE* csvTimes = nullptr;
-FILE* csvValid = nullptr;
+double lastCpuMs = 0;  // mediana de la ultima medicion en CPU, para calcular la aceleracion
+double lastCpuDe = 0;  // su desviacion estandar
+
+// Aceleraciones de todas las pruebas, para el resumen final
+std::vector<double> speedKernel, speedTotal;
+int failedTests = 0;
+
+// say(): escribe en la terminal y en results/benchmark_log.txt al mismo tiempo
+FILE* logFile = nullptr;
+void say(const char* fmt, ...) {
+    va_list a;
+    va_start(a, fmt);
+    vprintf(fmt, a);
+    va_end(a);
+    fflush(stdout);
+    if (logFile) {
+        va_start(a, fmt);
+        vfprintf(logFile, fmt, a);
+        va_end(a);
+        fflush(logFile);
+    }
+}
+
+// Encabezado de la tabla de cada experimento
+void tableHeader(const char* firstCol) {
+    say("  %-16s %10s %13s %13s %11s %11s %7s\n", firstCol, "CPU (ms)", "GPU calc(ms)", "GPU total(ms)",
+        "Acel.calc", "Acel.total", "Igual");
+    say("  %s\n", std::string(87, '-').c_str());
+}
 std::map<std::string, Input> inputs;
 GpuConvolver* gpu = nullptr;
 
@@ -60,7 +89,7 @@ Input& loadInput(const std::string& name) {
     in.name = name;
     std::string path = opt.dataDir + "/" + name + ".pgm";
     if (!readPGM(path, in.img)) {
-        fprintf(stderr, "No se encontró %s. Ejecute primero scripts\\prepare_images.ps1\n", path.c_str());
+        fprintf(stderr, "No se encontro %s. Ejecute primero scripts\\prepare_images.ps1\n", path.c_str());
         std::exit(1);
     }
     in.f.assign(in.img.pixels.begin(), in.img.pixels.end());
@@ -83,9 +112,9 @@ std::string powerJson(bool warn) {
         const int pct = s.BatteryLifePercent;
         if (warn && (!ac || (pct != 255 && pct < 20)))
             fprintf(stderr,
-                    "ADVERTENCIA: %s, batería al %d %%. El portátil puede limitar la potencia y alterar los "
-                    "tiempos; conviene medir conectado y con la batería por encima del 20 %%.\n",
-                    ac ? "conectado a la red" : "funcionando con batería", pct);
+                    "ADVERTENCIA: %s, bateria al %d %%. El portatil puede limitar la potencia y alterar los "
+                    "tiempos; conviene medir conectado y con la bateria por encima del 20 %%.\n",
+                    ac ? "conectado a la red" : "funcionando con bateria", pct);
         char buf[96];
         snprintf(buf, sizeof(buf), "{\"ac\": %s, \"battery_pct\": %d}", ac ? "true" : "false", pct == 255 ? -1 : pct);
         return buf;
@@ -169,8 +198,8 @@ double runCPU(int exp, const Mask& m, const Input& in, std::vector<float>& ref) 
     }
     fflush(csvTimes);
     double med = median(times);
-    printf("  [exp %d] CPU  %-10s %-5s %-13s %-9s          mediana %10.2f ms  (de %.2f)\n", exp, filterName(m.type),
-           maskLabel(m).c_str(), in.name.c_str(), in.dims().c_str(), med, stddevSample(times));
+    lastCpuMs = med;
+    lastCpuDe = stddevSample(times);
     return med;
 }
 
@@ -215,17 +244,21 @@ void runGPU(int exp, const Mask& m, const Input& in, int tpb, const std::vector<
     fflush(csvTimes);
     worst.meanAbs = meanSum / opt.reps;
     double tol = toleranceFor(m);
-    size_t diff8 = countDisplayDiffs(ref.data(), out.data(), n, m.type);
     bool pass = worst.nonFinite == 0 && worst.maxAbs <= tol;
-    fprintf(csvValid, "%d,%s,%s,%s,%s,%d,%d,%.9g,%.9g,%.9g,%zu,%zu,%s\n", exp, filterName(m.type), in.name.c_str(),
-            in.dims().c_str(), maskLabel(m).c_str(), tpb, blocks, worst.maxAbs, worst.meanAbs, tol, worst.nonFinite,
-            diff8, pass ? "OK" : "FALLA");
-    fflush(csvValid);
-    printf("  [exp %d] CUDA %-10s %-5s %-13s %-9s %3d hilos mediana kernel %8.3f ms (de %.3f), total %8.2f ms | "
-           "err max %.3g (tol %.3g) %s [%d calent.]\n",
-           exp, filterName(m.type), maskLabel(m).c_str(), in.name.c_str(), in.dims().c_str(), tpb, median(kernel),
-           stddevSample(kernel), median(total), worst.maxAbs, tol, pass ? "OK" : "FALLA", warmRuns);
-    if (!pass) fprintf(stderr, "  ADVERTENCIA: la validación numérica falló en esta configuración\n");
+    (void)warmRuns, (void)blocks;
+
+    // Una fila de la tabla: tiempos (mediana de las repeticiones) y cuantas veces mas rapida es la GPU
+    const double kMed = median(kernel), tMed = median(total);
+    std::string label;
+    if (exp == 1) label = std::string(filterName(m.type)) + " " + maskLabel(m);
+    else if (exp == 2) label = in.dims();
+    else if (exp == 3) label = "media " + maskLabel(m);
+    else label = std::to_string(tpb) + " hilos";
+    say("  %-16s %10.2f %13.3f %13.2f %10.1fx %10.1fx %7s\n", label.c_str(), lastCpuMs, kMed, tMed, lastCpuMs / kMed,
+        lastCpuMs / tMed, pass ? "SI" : "NO");
+    speedKernel.push_back(lastCpuMs / kMed);
+    speedTotal.push_back(lastCpuMs / tMed);
+    if (!pass) ++failedTests;
 }
 
 std::vector<std::string> splitList(const std::string& s) {
@@ -285,36 +318,33 @@ int main(int argc, char** argv) {
     opt.baseWidth = base.img.width;
     size_t maxPixels = base.pixels();
     for (const Input* in : imgs) maxPixels = std::max(maxPixels, in->pixels());
-    const std::string powerStart = powerJson(true);
-    std::time_t startTime = std::time(nullptr);
+    powerJson(true);  // solo para avisar si la laptop esta con bateria
 
     std::string timesPath = opt.outDir + "/tiempos_crudos.csv";
-    std::string validPath = opt.outDir + "/validacion.csv";
+    std::string logPath = opt.outDir + "/benchmark_log.txt";
     csvTimes = fopen(timesPath.c_str(), "w");
-    csvValid = fopen(validPath.c_str(), "w");
-    if (!csvTimes || !csvValid) {
-        fprintf(stderr, "No se pudieron crear los CSV en %s\n", opt.outDir.c_str());
+    logFile = fopen(logPath.c_str(), "w");
+    if (!csvTimes) {
+        fprintf(stderr, "No se pudo crear %s: si esta abierto en Excel u otro programa, cierrelo y vuelva a ejecutar\n",
+                timesPath.c_str());
         return 1;
     }
     fprintf(csvTimes,
             "experimento,implementacion,filtro,imagen,resolucion,mascara,hilos_por_bloque,bloques,repeticion,metrica,"
             "tiempo,unidad\n");
-    fprintf(csvValid,
-            "experimento,filtro,imagen,resolucion,mascara,hilos_por_bloque,bloques,error_abs_max,error_abs_medio,"
-            "tolerancia,pixeles_no_finitos,pixeles_8bit_distintos,resultado\n");
 
     gpu = new GpuConvolver(maxPixels, 21);
 
     std::vector<float> ref, out;
-    printf("Repeticiones medidas por configuración: %d (+ calentamiento: 1 en CPU, >= %.0f ms en GPU)\n", opt.reps,
-           opt.warmupMs);
-    printf("Imágenes (versiones de la misma foto):");
-    for (const Input* in : imgs) printf(" %s %s;", in->name.c_str(), in->dims().c_str());
-    printf(" base de los experimentos 1, 3 y 4: %s %s\n", base.name.c_str(), base.dims().c_str());
+    say("  Cada prueba se mide %d veces y se muestra la mediana. Tiempos en milisegundos (ms).\n", opt.reps);
+    say("  Acel.calc  = cuantas veces mas rapida es la GPU solo calculando      (CPU / GPU calc)\n");
+    say("  Acel.total = cuantas veces mas rapida contando las copias de datos  (CPU / GPU total)\n");
+    say("  Igual      = la GPU dio el mismo resultado que la CPU\n");
 
     if (opt.experiments.count(1)) {
-        printf("Experimento 1: filtro (media, nitidez, laplaciano 3x3; %s; %d hilos)\n", base.dims().c_str(),
-               kDefaultThreads);
+        say("\n  EXPERIMENTO 1 - Tipo de filtro (imagen %s, %d hilos por bloque)\n", base.dims().c_str(),
+            kDefaultThreads);
+        tableHeader("Filtro");
         saveInput(base);
         for (FilterType t : {FilterType::Average, FilterType::Sharpen, FilterType::Laplacian}) {
             Mask m = makeMask(t, 3);
@@ -325,7 +355,8 @@ int main(int argc, char** argv) {
         }
     }
     if (opt.experiments.count(2)) {
-        printf("Experimento 2: resolución (media 9x9; 2000, 4000 y 6000; %d hilos)\n", kDefaultThreads);
+        say("\n  EXPERIMENTO 2 - Tamano de la imagen (media 9x9, %d hilos por bloque)\n", kDefaultThreads);
+        tableHeader("Imagen");
         Mask m = makeMask(FilterType::Average, 9);
         for (const Input* in : imgs) {
             saveInput(*in);
@@ -335,7 +366,9 @@ int main(int argc, char** argv) {
         }
     }
     if (opt.experiments.count(3)) {
-        printf("Experimento 3: máscara (media 3x3, 9x9, 21x21; %s; %d hilos)\n", base.dims().c_str(), kDefaultThreads);
+        say("\n  EXPERIMENTO 3 - Tamano de la mascara (imagen %s, %d hilos por bloque)\n", base.dims().c_str(),
+            kDefaultThreads);
+        tableHeader("Mascara");
         for (int k : {3, 9, 21}) {
             Mask m = makeMask(FilterType::Average, k);
             runCPU(3, m, base, ref);
@@ -344,37 +377,26 @@ int main(int argc, char** argv) {
         }
     }
     if (opt.experiments.count(4)) {
-        printf("Experimento 4: hilos por bloque (media 9x9; %s; 128, 256, 512)\n", base.dims().c_str());
+        say("\n  EXPERIMENTO 4 - Hilos por bloque (media 9x9, imagen %s)\n", base.dims().c_str());
+        tableHeader("Hilos/bloque");
         Mask m = makeMask(FilterType::Average, 9);
         runCPU(4, m, base, ref);
         for (int tpb : {128, 256, 512}) runGPU(4, m, base, tpb, ref, out);
     }
     delete gpu;
     fclose(csvTimes);
-    fclose(csvValid);
 
-    FILE* f = fopen((opt.outDir + "/run_info.json").c_str(), "w");
-    if (!f) {
-        fprintf(stderr, "No se pudo escribir %s/run_info.json\n", opt.outDir.c_str());
-        return 1;
+    // Resumen final
+    if (!speedKernel.empty()) {
+        const auto [k0, k1] = std::minmax_element(speedKernel.begin(), speedKernel.end());
+        const auto [t0, t1] = std::minmax_element(speedTotal.begin(), speedTotal.end());
+        say("\n  RESUMEN\n");
+        say("  La GPU fue entre %.1f y %.1f veces mas rapida que la CPU solo calculando,\n", *k0, *k1);
+        say("  y entre %.1f y %.1f veces mas rapida contando las copias de datos.\n", *t0, *t1);
+        if (failedTests == 0) say("  En todas las pruebas la GPU dio el mismo resultado que la CPU.\n");
+        else say("  ATENCION: %d pruebas no dieron el mismo resultado que la CPU.\n", failedTests);
     }
-    char date[64];
-    std::strftime(date, sizeof(date), "%Y-%m-%d %H:%M:%S", std::localtime(&startTime));
-    fprintf(f, "{\n  \"date\": \"%s\",\n  \"repetitions\": %d,\n  \"cpu_warmup_runs\": 1,\n", date, opt.reps);
-    fprintf(f, "  \"gpu_warmup_ms\": %.0f,\n  \"default_threads_per_block\": %d,\n", opt.warmupMs, kDefaultThreads);
-    fprintf(f, "  \"power_start\": %s,\n  \"power_end\": %s,\n", powerStart.c_str(), powerJson(false).c_str());
-    fprintf(f, "  \"base_image\": \"%s\",\n  \"images\": [", base.name.c_str());
-    for (size_t i = 0; i < imgs.size(); ++i)
-        fprintf(f, "%s\n    {\"name\": \"%s\", \"width\": %d, \"height\": %d, \"pixels\": %zu}", i ? "," : "",
-                imgs[i]->name.c_str(), imgs[i]->img.width, imgs[i]->img.height, imgs[i]->pixels());
-    fprintf(f, "\n  ],\n  \"detail_crops\": {");
-    bool first = true;
-    for (const auto& [name, p] : cropPos) {
-        fprintf(f, "%s\n    \"%s\": {\"x\": %d, \"y\": %d, \"size\": %d}", first ? "" : ",", name.c_str(), p.x0, p.y0, p.s);
-        first = false;
-    }
-    fprintf(f, "\n  },\n  \"gpu\": %s\n}\n", gpuInfoJson().c_str());
-    fclose(f);
-    printf("Tiempos crudos: %s\nValidación:     %s\n", timesPath.c_str(), validPath.c_str());
-    return 0;
+    say("\n  Guardado en: %s (este resumen) y %s (todas las repeticiones)\n", logPath.c_str(), timesPath.c_str());
+    if (logFile) fclose(logFile);
+    return failedTests ? 1 : 0;
 }
