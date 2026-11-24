@@ -1,6 +1,6 @@
 @echo off
 rem Construye la imagen Docker, comprueba el acceso a la GPU e inicia el servicio web en el puerto 8000.
-rem Requiere Docker Desktop (WSL2) con soporte de GPU NVIDIA y haber ejecutado antes run_all.bat (imagenes de data\).
+rem Requiere Docker Desktop (WSL2) con soporte de GPU NVIDIA. Las imagenes de data\ solo hacen falta para validar (ver README).
 setlocal
 cd /d "%~dp0"
 set "IMAGEN=convolucion-web:1.0"

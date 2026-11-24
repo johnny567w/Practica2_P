@@ -57,19 +57,76 @@ Arquitectura: **navegador → servicio web Python (Flask + gunicorn) → PyCUDA 
 | `web/cliente.py` | Validación funcional y numérica, y experimentos a través del servicio. |
 | `Dockerfile`, `web/requirements.txt` | Imagen del contenedor con versiones fijas. |
 
-### Construir, comprobar la GPU e iniciar
+### Desplegar desde cero, paso a paso
 
-Requiere Docker Desktop con WSL2 y una GPU NVIDIA (controlador 555 o superior en el anfitrión). El controlador
-lo aporta el anfitrión; la imagen trae el CUDA Toolkit 12.5, Python 3.10, PyCUDA, Flask y gunicorn.
+**Requisitos del equipo** (Windows 10 u 11):
+
+- GPU NVIDIA con controlador 555 o superior. En PowerShell, `nvidia-smi` debe mostrar la GPU.
+- Docker Desktop con WSL2, abierto (en la barra de tareas debe decir *Engine running*).
+- Git.
+
+El controlador lo aporta el anfitrión; la imagen trae el CUDA Toolkit 12.5, Python 3.10, PyCUDA, Flask y
+gunicorn, así que para el servicio no hace falta instalar Python ni CUDA en Windows.
+
+**1. Clonar el repositorio**
+
+```
+git clone https://github.com/johnny567w/Practica2_P.git
+cd Practica2_P
+```
+
+**2. Construir la imagen** (la primera vez descarga la imagen base de NVIDIA, unos GB, y tarda varios minutos)
 
 ```
 docker build -t convolucion-web:1.0 .
-docker run --rm --gpus all convolucion-web:1.0 nvidia-smi
+```
+
+**3. Comprobar que el contenedor ve la GPU** (debe mostrar el nombre de la GPU y la versión del controlador)
+
+```
+docker run --rm --gpus all convolucion-web:1.0 nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv
+```
+
+Se usa la consulta en CSV porque la tabla completa de `nvidia-smi` puede fallar dentro de WSL2.
+
+**4. Iniciar el servicio** (dejar esta terminal abierta; Ctrl+C lo detiene)
+
+```
 docker run --rm --name convolucion-web --gpus all -p 8000:8000 convolucion-web:1.0
 ```
 
-(`run_web.bat` hace los tres pasos.) El servicio queda en `http://localhost:8000`, con gunicorn
-(1 proceso, 8 hilos), sin depurador ni recarga automática.
+Está listo cuando aparece `Listening at: http://0.0.0.0:8000`. `run_web.bat` hace los pasos 2, 3 y 4.
+El servicio corre con gunicorn (1 proceso, 8 hilos), sin depurador ni recarga automática.
+
+**5. Probarlo**
+
+- Estado: abrir `http://localhost:8000/api/salud`; debe responder `"ok": true` con el nombre de la GPU.
+- Interfaz: abrir `http://localhost:8000`, elegir una imagen (PNG, JPEG, BMP o PGM de hasta 6000 píxeles por
+  lado), un filtro y *Procesar*. `data\img3.jpg` mide 6315×8416 y se rechaza a propósito por el límite.
+- Desde otro equipo de la red: `http://<IP de este equipo>:8000` (hay que permitir el puerto 8000 en el
+  firewall de Windows).
+
+**6. Validar** (con el servicio encendido, en otra terminal)
+
+La validación usa las imágenes `data\img_2000.pgm`, `img_4000.pgm` e `img_6000.pgm`, que no están en el
+repositorio: se generan desde `data\img3.jpg`. Esto necesita Visual Studio 2022 (C++), CUDA Toolkit 12.5 y
+Python 3.13 en Windows.
+
+```
+py -3.13 -m pip install numpy pycuda pillow
+build.bat
+powershell -ExecutionPolicy Bypass -File scripts\prepare_images.ps1
+py -3.13 web\cliente.py validar --url http://localhost:8000
+```
+
+Debe terminar con `Resultado: TODAS LAS PRUEBAS PASARON`.
+
+**7. Medir** (opcional; detiene y vuelve a iniciar el servicio por su cuenta, y reemplaza los archivos de
+`results\web`)
+
+```
+powershell -ExecutionPolicy Bypass -File web\experimentos.ps1
+```
 
 ### API
 
@@ -96,7 +153,7 @@ grandes, 415 formato no permitido, 503 GPU no disponible o cola llena, 500 error
 
 Cada solicitud tiene un identificador único y su propia carpeta; los resultados se borran a los 15 minutos.
 
-### Pruebas y experimentos
+### Pruebas y experimentos por separado
 
 ```
 py -3.13 web\cliente.py validar --url http://localhost:8000
