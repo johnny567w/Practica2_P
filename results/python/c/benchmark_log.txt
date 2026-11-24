@@ -6,34 +6,34 @@
   EXPERIMENTO 1 - Tipo de filtro (imagen 4000x4000, 256 hilos por bloque)
   Filtro             CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
   ---------------------------------------------------------------------------------------
-  media 3x3            135.22         2.545         22.48       53.1x        6.0x      SI
-  nitidez 3x3          137.37         2.549         22.44       53.9x        6.1x      SI
-  laplaciano 3x3       136.00         2.544         22.46       53.5x        6.1x      SI
+  media 3x3            137.55         2.542         22.64       54.1x        6.1x      SI
+  nitidez 3x3          135.12         2.538         22.58       53.2x        6.0x      SI
+  laplaciano 3x3       139.48         2.545         22.62       54.8x        6.2x      SI
 
   EXPERIMENTO 2 - Tamano de la imagen (media 9x9, 256 hilos por bloque)
   Imagen             CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
   ---------------------------------------------------------------------------------------
-  2000x2000            233.06         2.152          7.33      108.3x       31.8x      SI
-  4000x4000            914.14         8.530         28.51      107.2x       32.1x      SI
-  6000x6000           2051.34        19.339         63.87      106.1x       32.1x      SI
+  2000x2000            228.02         2.157          7.42      105.7x       30.7x      SI
+  4000x4000            931.23         8.520         28.58      109.3x       32.6x      SI
+  6000x6000           2180.87        19.308         64.07      113.0x       34.0x      SI
 
   EXPERIMENTO 3 - Tamano de la mascara (imagen 4000x4000, 256 hilos por bloque)
   Mascara            CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
   ---------------------------------------------------------------------------------------
-  media 3x3            137.68         2.536         22.50       54.3x        6.1x      SI
-  media 9x9            953.84         8.521         28.45      111.9x       33.5x      SI
-  media 21x21         5225.36        42.859         63.01      121.9x       82.9x      SI
+  media 3x3            148.35         2.533         22.71       58.6x        6.5x      SI
+  media 9x9            958.27         8.515         28.79      112.5x       33.3x      SI
+  media 21x21         5393.39        42.913         64.28      125.7x       83.9x      SI
 
   EXPERIMENTO 4 - Hilos por bloque (media 9x9, imagen 4000x4000)
   Hilos/bloque       CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
   ---------------------------------------------------------------------------------------
-  128 hilos            910.40         8.621         28.58      105.6x       31.9x      SI
-  256 hilos            910.40         8.528         28.45      106.8x       32.0x      SI
-  512 hilos            910.40         8.623         28.55      105.6x       31.9x      SI
+  128 hilos            983.54         8.621         35.07      114.1x       28.0x      SI
+  256 hilos            983.54         8.515         30.08      115.5x       32.7x      SI
+  512 hilos            983.54         8.580         29.53      114.6x       33.3x      SI
 
   RESUMEN
-  La GPU fue entre 53.1 y 121.9 veces mas rapida que la CPU solo calculando,
-  y entre 6.0 y 82.9 veces mas rapida contando las copias de datos.
+  La GPU fue entre 53.2 y 125.7 veces mas rapida que la CPU solo calculando,
+  y entre 6.0 y 83.9 veces mas rapida contando las copias de datos.
   En todas las pruebas la GPU dio el mismo resultado que la CPU.
 
   Guardado en: C:\Users\Asus\Desktop\paralela\Practica_2\results\python\c/benchmark_log.txt (este resumen) y C:\Users\Asus\Desktop\paralela\Practica_2\results\python\c/tiempos_crudos.csv (todas las repeticiones)

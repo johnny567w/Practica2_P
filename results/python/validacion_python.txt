@@ -43,36 +43,36 @@
   Prueba de limites (1001x777, no multiplo de los bloques): pixeles sin escribir = 0, error maximo en los bordes = 3.05e-05
 
 == Comparacion numerica con las imagenes de la practica ==
-  500x500, media 3x3                 CUDA C             err.max   4.58e-05  err.medio   3.44e-06  tol  0.000274  no escritos   0  OK
+  500x500, media 3x3                 CUDA C             err.max   4.58e-05  err.medio   2.15e-06  tol  0.000274  no escritos   0  OK
   500x500, media 3x3                 Python secuencial  err.max          0  err.medio          0  tol  0.000274  no escritos   0  OK
-  500x500, media 3x3                 PyCUDA             err.max   4.58e-05  err.medio   3.44e-06  tol  0.000274  no escritos   0  OK
+  500x500, media 3x3                 PyCUDA             err.max   4.58e-05  err.medio   2.15e-06  tol  0.000274  no escritos   0  OK
   500x500, nitidez 3x3               CUDA C             err.max          0  err.medio          0  tol   0.00246  no escritos   0  OK
   500x500, nitidez 3x3               Python secuencial  err.max          0  err.medio          0  tol   0.00246  no escritos   0  OK
   500x500, nitidez 3x3               PyCUDA             err.max          0  err.medio          0  tol   0.00246  no escritos   0  OK
   500x500, laplaciano 3x3            CUDA C             err.max          0  err.medio          0  tol   0.00219  no escritos   0  OK
   500x500, laplaciano 3x3            Python secuencial  err.max          0  err.medio          0  tol   0.00219  no escritos   0  OK
   500x500, laplaciano 3x3            PyCUDA             err.max          0  err.medio          0  tol   0.00219  no escritos   0  OK
-  500x500, media 9x9                 CUDA C             err.max   0.000122  err.medio   6.34e-06  tol   0.00246  no escritos   0  OK
+  500x500, media 9x9                 CUDA C             err.max   7.63e-05  err.medio   3.64e-06  tol   0.00246  no escritos   0  OK
   500x500, media 9x9                 Python secuencial  err.max          0  err.medio          0  tol   0.00246  no escritos   0  OK
-  500x500, media 9x9                 PyCUDA             err.max   0.000122  err.medio   6.34e-06  tol   0.00246  no escritos   0  OK
-  500x500, media 21x21               CUDA C             err.max   9.16e-05  err.medio   4.29e-06  tol    0.0134  no escritos   0  OK
+  500x500, media 9x9                 PyCUDA             err.max   7.63e-05  err.medio   3.64e-06  tol   0.00246  no escritos   0  OK
+  500x500, media 21x21               CUDA C             err.max   7.63e-05  err.medio    3.3e-06  tol    0.0134  no escritos   0  OK
   500x500, media 21x21               Python secuencial  err.max          0  err.medio          0  tol    0.0134  no escritos   0  OK
-  500x500, media 21x21               PyCUDA             err.max   9.16e-05  err.medio   4.29e-06  tol    0.0134  no escritos   0  OK
-  4000x4000, media 3x3               CUDA C             err.max   4.58e-05  err.medio   3.05e-06  tol  0.000274  no escritos   0  OK
-  4000x4000, media 3x3               PyCUDA             err.max   4.58e-05  err.medio   3.05e-06  tol  0.000274  no escritos   0  OK
+  500x500, media 21x21               PyCUDA             err.max   7.63e-05  err.medio    3.3e-06  tol    0.0134  no escritos   0  OK
+  4000x4000, media 3x3               CUDA C             err.max   4.58e-05  err.medio   2.19e-06  tol  0.000274  no escritos   0  OK
+  4000x4000, media 3x3               PyCUDA             err.max   4.58e-05  err.medio   2.19e-06  tol  0.000274  no escritos   0  OK
   4000x4000, nitidez 3x3             CUDA C             err.max          0  err.medio          0  tol   0.00246  no escritos   0  OK
   4000x4000, nitidez 3x3             PyCUDA             err.max          0  err.medio          0  tol   0.00246  no escritos   0  OK
   4000x4000, laplaciano 3x3          CUDA C             err.max          0  err.medio          0  tol   0.00219  no escritos   0  OK
   4000x4000, laplaciano 3x3          PyCUDA             err.max          0  err.medio          0  tol   0.00219  no escritos   0  OK
-  4000x4000, media 9x9               CUDA C             err.max   0.000183  err.medio   5.75e-06  tol   0.00246  no escritos   0  OK
-  4000x4000, media 9x9               PyCUDA             err.max   0.000183  err.medio   5.75e-06  tol   0.00246  no escritos   0  OK
-  4000x4000, media 21x21             CUDA C             err.max   0.000183  err.medio   4.16e-06  tol    0.0134  no escritos   0  OK
-  4000x4000, media 21x21             PyCUDA             err.max   0.000183  err.medio   4.16e-06  tol    0.0134  no escritos   0  OK
+  4000x4000, media 9x9               CUDA C             err.max   0.000122  err.medio   3.72e-06  tol   0.00246  no escritos   0  OK
+  4000x4000, media 9x9               PyCUDA             err.max   0.000122  err.medio   3.72e-06  tol   0.00246  no escritos   0  OK
+  4000x4000, media 21x21             CUDA C             err.max   0.000168  err.medio   4.04e-06  tol    0.0134  no escritos   0  OK
+  4000x4000, media 21x21             PyCUDA             err.max   0.000168  err.medio   4.04e-06  tol    0.0134  no escritos   0  OK
   (Python secuencial no se compara en 4000x4000: ver la viabilidad en 'medir')
   Comparacion numerica (500x500 con las 4 versiones; 4000x4000 con C++, CUDA C y PyCUDA):
       Python secuencial     12 de  12 casos dentro de la tolerancia, error maximo 0
-      CUDA C                18 de  18 casos dentro de la tolerancia, error maximo 0.000183
-      PyCUDA                14 de  14 casos dentro de la tolerancia, error maximo 0.000183
+      CUDA C                18 de  18 casos dentro de la tolerancia, error maximo 0.000168
+      PyCUDA                14 de  14 casos dentro de la tolerancia, error maximo 0.000168
       PyCUDA 128 hilos       4 de   4 casos dentro de la tolerancia, error maximo 4.58e-05
       PyCUDA 256 hilos       4 de   4 casos dentro de la tolerancia, error maximo 4.58e-05
       PyCUDA 512 hilos       4 de   4 casos dentro de la tolerancia, error maximo 4.58e-05
