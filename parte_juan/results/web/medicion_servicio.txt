@@ -1,0 +1,19 @@
+  Servicio: http://localhost:8000 | GPU: NVIDIA GeForce GTX 1650 (4095 MiB, capacidad 7.5) | cola maxima 4
+  Arranque del servicio: contexto 668 ms, compilar el kernel 382 ms (se hace una vez al iniciar el contenedor)
+  Cliente: cliente en el anfitrion (mismo equipo), localhost
+  img_4000.pgm: sha256 37ebd35acb0a94f9...
+  media 9x9 4000x4000: kernel   24.351 ms, servidor    578.4 ms, cliente    614.3 ms  (10/10 correctas)
+  img_2000.pgm: sha256 6067c4a68c6969e6...
+  media 9x9 2000x2000: kernel   11.457 ms, servidor    144.9 ms, cliente    167.0 ms  (10/10 correctas)
+  img_6000.pgm: sha256 68f4f0539d23f2e2...
+  media 9x9 6000x6000: kernel   45.234 ms, servidor   1323.7 ms, cliente   1365.3 ms  (10/10 correctas)
+  media 3x3 4000x4000: kernel   20.101 ms, servidor    688.9 ms, cliente    727.2 ms  (10/10 correctas)
+  media 21x21 4000x4000: kernel   62.137 ms, servidor    503.9 ms, cliente    534.6 ms  (10/10 correctas)
+  nitidez 3x3 4000x4000: kernel   20.267 ms, servidor    961.8 ms, cliente   1011.3 ms  (10/10 correctas)
+  laplaciano 3x3 4000x4000: kernel   20.080 ms, servidor    930.0 ms, cliente    985.6 ms  (10/10 correctas)
+
+  Solicitudes concurrentes (media 9x9, 4000x4000, una solicitud por cliente, 5 rondas)
+    1 cliente(s): latencia mediana   635.4 ms (DE 21.5), espera en cola mediana    0.1 ms, 1.54 solicitudes exitosas/s, fallos 0
+    2 cliente(s): latencia mediana  1096.2 ms (DE 272.7), espera en cola mediana  248.7 ms, 1.48 solicitudes exitosas/s, fallos 0
+
+  Guardado: C:\Users\Asus\Desktop\paralela\Practica_2\results\web\tiempos_servicio.csv y C:\Users\Asus\Desktop\paralela\Practica_2\results\web\medicion_servicio.txt

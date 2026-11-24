@@ -1,0 +1,9 @@
+﻿> curl http://localhost:8001/api/salud
+{"cola_max":4,"en_cola":0,"error":"No se pudo iniciar CUDA: ImportError: libcuda.so.1: cannot open shared object file: No such file or directory","hilos_por_bloque":256,"limites":{"mascaras_media":[3,9,21],"max_lado":6000,"max_mb":60},"ok":false,"procesando":false}
+
+HTTP 503
+
+> curl -F imagen=@data\img_500.pgm -F filtro=media -F k=3 http://localhost:8001/api/procesar
+{"error":"No se pudo iniciar CUDA: ImportError: libcuda.so.1: cannot open shared object file: No such file or directory","id":"7cfbe0eb65214db197fabba4c161b6c8","ok":false}
+
+HTTP 503

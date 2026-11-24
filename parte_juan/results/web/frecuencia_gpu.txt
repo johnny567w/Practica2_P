@@ -1,0 +1,9 @@
+Tiempo del kernel (eventos CUDA, ms), media 3x3, 4000x4000, 256 hilos por bloque
+GPU: NVIDIA GeForce GTX 1650 (4095 MiB, capacidad 7.5)
+
+seguidos (sin pausa)                 mediana    2.59  min   2.58  max   2.67  | 2.59 2.64 2.59 2.58 2.59 2.59 2.67 2.61 2.60 2.59
+pausa de 0.1 s antes de cada uno     mediana    2.59  min   2.57  max   2.60  | 2.58 2.59 2.59 2.57 2.58 2.59 2.60 2.58 2.60 2.59
+pausa de 0.5 s antes de cada uno     mediana   14.35  min   4.25  max  20.46  | 4.25 8.80 19.89 20.09 19.92 8.75 8.76 8.75 20.45 20.46
+
+Con lanzamientos seguidos la GPU mantiene su frecuencia alta; con pausas (como entre solicitudes
+del servicio) la baja y el mismo kernel tarda varias veces mas.
