@@ -1,0 +1,6 @@
+# Versiones fijas para el contenedor (Python 3.10 de Ubuntu 22.04, CUDA 12.5)
+numpy==1.26.4
+pycuda==2024.1.2
+Flask==3.0.3
+gunicorn==22.0.0
+Pillow==10.4.0

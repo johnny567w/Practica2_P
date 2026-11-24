@@ -6,20 +6,20 @@
   EXPERIMENTO 1 - Tipo de filtro (imagen 500x500, 256 hilos por bloque)
   Filtro             CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
   ---------------------------------------------------------------------------------------
-  media 3x3              2.45         0.043          0.63       57.4x        3.9x      SI
-  nitidez 3x3            2.11         0.044          0.65       48.3x        3.2x      SI
-  laplaciano 3x3         2.61         0.043          0.59       60.9x        4.4x      SI
+  media 3x3              2.51         0.041          0.53       61.4x        4.7x      SI
+  nitidez 3x3            2.06         0.042          0.54       48.6x        3.8x      SI
+  laplaciano 3x3         2.06         0.041          0.54       50.2x        3.8x      SI
 
   EXPERIMENTO 3 - Tamano de la mascara (imagen 500x500, 256 hilos por bloque)
   Mascara            CPU (ms)  GPU calc(ms) GPU total(ms)   Acel.calc  Acel.total   Igual
   ---------------------------------------------------------------------------------------
-  media 3x3              2.14         0.042          0.58       50.8x        3.7x      SI
-  media 9x9             15.70         0.141          0.71      111.0x       22.2x      SI
-  media 21x21           83.26         0.635          1.19      131.1x       69.8x      SI
+  media 3x3              2.11         0.042          0.53       50.7x        4.0x      SI
+  media 9x9             15.77         0.141          0.63      111.8x       24.9x      SI
+  media 21x21           81.96         0.628          1.18      130.6x       69.4x      SI
 
   RESUMEN
-  La GPU fue entre 48.3 y 131.1 veces mas rapida que la CPU solo calculando,
-  y entre 3.2 y 69.8 veces mas rapida contando las copias de datos.
+  La GPU fue entre 48.6 y 130.6 veces mas rapida que la CPU solo calculando,
+  y entre 3.8 y 69.4 veces mas rapida contando las copias de datos.
   En todas las pruebas la GPU dio el mismo resultado que la CPU.
 
   Guardado en: C:\Users\Asus\Desktop\paralela\Practica_2\results\python\c_500/benchmark_log.txt (este resumen) y C:\Users\Asus\Desktop\paralela\Practica_2\results\python\c_500/tiempos_crudos.csv (todas las repeticiones)

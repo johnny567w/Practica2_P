@@ -1,5 +1,4 @@
-"""Convolucion con PyCUDA: compila el kernel de la practica 01 (kernel_convolucion.cu) con SourceModule
-y lo ejecuta desde Python, con drv.In / drv.Out o con arreglos de GPU para medir las copias por separado."""
+
 import os
 import shutil
 import subprocess
@@ -14,10 +13,11 @@ KERNEL = Path(__file__).resolve().parent / "kernel_convolucion.cu"
 
 
 def preparar_compilador():
-    """PyCUDA compila con nvcc, y nvcc necesita cl.exe (Visual Studio 2022) en el PATH."""
     cuda = os.environ.get("CUDA_PATH")
     if cuda and shutil.which("nvcc") is None:
         os.environ["PATH"] = str(Path(cuda) / "bin") + os.pathsep + os.environ["PATH"]
+    if os.name != "nt":  # en Linux (contenedor Docker) nvcc usa g++, no hace falta Visual Studio
+        return
     if shutil.which("cl") is not None:
         return
     vswhere = Path(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)")) / \
@@ -35,7 +35,6 @@ def preparar_compilador():
 
 
 class PyCuda:
-    """Contexto CUDA + kernel de la practica 01 compilado con SourceModule."""
 
     def __init__(self):
         preparar_compilador()
@@ -73,9 +72,7 @@ class PyCuda:
         return a
 
     def ejecutar(self, img, m, hilos=256, envenenar=False):
-        """Ejecucion simple con drv.In / drv.Out: PyCUDA reserva la memoria de la GPU, copia la entrada,
-        lanza el kernel, copia la salida y libera la memoria en la misma llamada.
-        Con envenenar=True la salida se llena antes con NaN (drv.InOut): si un pixel no se calcula, queda NaN."""
+
         drv = self.drv
         alto, ancho = img.shape
         n, k = alto * ancho, m.shape[0]

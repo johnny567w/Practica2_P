@@ -1,115 +1,115 @@
   EQUIPO: AMD Ryzen 7 5800HS with Radeon Graphics | 8 fisicos / 16 hilos | RAM 15.4 GB
           NVIDIA GeForce GTX 1650 (4096 MiB) | controlador 555.97 | CUDA 12.5
           Python 3.13.17 | NumPy 2.5.4 | PyCUDA 2026.1
-  PyCUDA: inicializar el contexto 127 ms, compilar y cargar el kernel 3694 ms (se hace una sola vez, fuera de las mediciones)
+  PyCUDA: inicializar el contexto 94 ms, compilar y cargar el kernel 2125 ms (se hace una sola vez, fuera de las mediciones)
   Repeticiones: PyCUDA 10 (calentamiento >= 2 s), Python 5; limite por corrida de Python: 120 s
   Ejecutando la version C/C++ y CUDA C (bin\benchmark.exe ) ...
   Ejecutando la version C/C++ y CUDA C (bin\benchmark.exe --imagenes img_500 --base img_500 --exp 1,3) ...
 
   [1/2] Midiendo PyCUDA ...
-      media 3x3       4000x4000 256 hilos: kernel    2.607 ms, total    25.31 ms, In/Out    57.08 ms
-      nitidez 3x3     4000x4000 256 hilos: kernel    2.603 ms, total    23.97 ms, In/Out    46.38 ms
-      laplaciano 3x3  4000x4000 256 hilos: kernel    2.604 ms, total    24.58 ms, In/Out    47.82 ms
-      media 9x9       2000x2000 256 hilos: kernel    2.211 ms, total     7.77 ms, In/Out    14.60 ms
-      media 9x9       4000x4000 256 hilos: kernel    8.600 ms, total    30.07 ms, In/Out    52.22 ms
-      media 9x9       6000x6000 256 hilos: kernel   19.506 ms, total    66.63 ms, In/Out   117.96 ms
-      media 21x21     4000x4000 256 hilos: kernel   43.984 ms, total    65.87 ms, In/Out    87.75 ms
-      media 9x9       4000x4000 128 hilos: kernel    8.693 ms, total    30.09 ms, In/Out    54.72 ms
-      media 9x9       4000x4000 512 hilos: kernel    8.668 ms, total    30.17 ms, In/Out    52.62 ms
-      media 3x3       500x500 256 hilos: kernel    0.077 ms, total     0.71 ms, In/Out     1.42 ms
-      nitidez 3x3     500x500 256 hilos: kernel    0.080 ms, total     0.71 ms, In/Out     1.45 ms
-      laplaciano 3x3  500x500 256 hilos: las repeticiones variaron 19% (la GPU cambio de velocidad); se repite la medicion
-      laplaciano 3x3  500x500 256 hilos: kernel    0.080 ms, total     0.76 ms, In/Out     1.40 ms
-      media 9x9       500x500 256 hilos: kernel    0.168 ms, total     0.81 ms, In/Out     1.01 ms
-      media 21x21     500x500 256 hilos: kernel    0.648 ms, total     1.21 ms, In/Out     1.69 ms
+      media 3x3       4000x4000 256 hilos: kernel    2.607 ms, total    22.88 ms, In/Out    43.92 ms
+      nitidez 3x3     4000x4000 256 hilos: kernel    2.605 ms, total    22.96 ms, In/Out    45.61 ms
+      laplaciano 3x3  4000x4000 256 hilos: kernel    2.610 ms, total    24.08 ms, In/Out    45.25 ms
+      media 9x9       2000x2000 256 hilos: kernel    2.212 ms, total     7.78 ms, In/Out    15.60 ms
+      media 9x9       4000x4000 256 hilos: kernel    8.603 ms, total    30.09 ms, In/Out    51.67 ms
+      media 9x9       6000x6000 256 hilos: kernel   19.387 ms, total    65.74 ms, In/Out   115.17 ms
+      media 21x21     4000x4000 256 hilos: kernel   42.519 ms, total    64.13 ms, In/Out    85.30 ms
+      media 9x9       4000x4000 128 hilos: kernel    8.694 ms, total    29.15 ms, In/Out    50.16 ms
+      media 9x9       4000x4000 512 hilos: kernel    8.672 ms, total    29.18 ms, In/Out    50.18 ms
+      media 3x3       500x500 256 hilos: kernel    0.075 ms, total     0.73 ms, In/Out     1.43 ms
+      nitidez 3x3     500x500 256 hilos: kernel    0.080 ms, total     0.71 ms, In/Out     1.44 ms
+      laplaciano 3x3  500x500 256 hilos: las repeticiones variaron 11% (la GPU cambio de velocidad); se repite la medicion
+      laplaciano 3x3  500x500 256 hilos: kernel    0.068 ms, total     0.67 ms, In/Out     1.38 ms
+      media 9x9       500x500 256 hilos: kernel    0.165 ms, total     0.77 ms, In/Out     1.04 ms
+      media 21x21     500x500 256 hilos: kernel    0.652 ms, total     1.20 ms, In/Out     1.72 ms
 
   [2/2] Midiendo Python secuencial (es lento: hasta 120 s por corrida) ...
-      media 3x3       4000x4000: 5 corridas, mediana    34.59 s
-      nitidez 3x3     4000x4000: 5 corridas, mediana    41.21 s
-      laplaciano 3x3  4000x4000: 5 corridas, mediana    35.82 s
-      media 9x9       2000x2000: 5 corridas, mediana    55.75 s
-      media 9x9       4000x4000: NO COMPLETADA (se detuvo a los 120 s; la prueba pequena estimaba unos 3 min por corrida)
-      media 9x9       6000x6000: NO COMPLETADA (se detuvo a los 120 s; la prueba pequena estimaba unos 7 min por corrida)
-      media 21x21     4000x4000: NO COMPLETADA (se detuvo a los 120 s; la prueba pequena estimaba unos 23 min por corrida)
-      media 3x3       500x500: 5 corridas, mediana     0.89 s
-      nitidez 3x3     500x500: 5 corridas, mediana     0.91 s
-      laplaciano 3x3  500x500: 5 corridas, mediana     1.21 s
-      media 9x9       500x500: 5 corridas, mediana     9.71 s
-      media 21x21     500x500: 5 corridas, mediana    28.03 s
+      media 3x3       4000x4000: 5 corridas, mediana    34.22 s
+      nitidez 3x3     4000x4000: 5 corridas, mediana    36.27 s
+      laplaciano 3x3  4000x4000: 5 corridas, mediana    42.75 s
+      media 9x9       2000x2000: 5 corridas, mediana    66.55 s
+      media 9x9       4000x4000: NO COMPLETADA (se detuvo a los 120 s; la prueba pequena estimaba unos 6 min por corrida)
+      media 9x9       6000x6000: NO COMPLETADA (se detuvo a los 120 s; la prueba pequena estimaba unos 10 min por corrida)
+      media 21x21     4000x4000: NO COMPLETADA (se detuvo a los 120 s; la prueba pequena estimaba unos 16 min por corrida)
+      media 3x3       500x500: 5 corridas, mediana     0.51 s
+      nitidez 3x3     500x500: 5 corridas, mediana     0.52 s
+      laplaciano 3x3  500x500: 5 corridas, mediana     0.53 s
+      media 9x9       500x500: 5 corridas, mediana     3.22 s
+      media 21x21     500x500: 5 corridas, mediana    16.52 s
 
   EXPERIMENTO 1 - Tipo de filtro (imagen 4000x4000, 256 hilos)
                      ---- Secuencial ----   --- GPU solo calculo ---   ---------- GPU con copias ----------
   Prueba             C++ (ms)  Python (ms)       CUDA C       PyCUDA       CUDA C     PyCUDA     In/Out   Igual Py/PyC
   ------------------------------------------------------------------------------------------------------------------------------
-  media 3x3            137.55      34593.8        2.542        2.607        22.64      25.31      57.08          SI/SI
-  nitidez 3x3          135.12      41207.3        2.538        2.603        22.58      23.97      46.38          SI/SI
-  laplaciano 3x3       139.48      35817.6        2.545        2.604        22.62      24.58      47.82          SI/SI
+  media 3x3            135.22      34222.2        2.545        2.607        22.48      22.88      43.92          SI/SI
+  nitidez 3x3          137.37      36268.1        2.549        2.605        22.44      22.96      45.61          SI/SI
+  laplaciano 3x3       136.00      42747.8        2.544        2.610        22.46      24.08      45.25          SI/SI
   Aceleracion               CUDA C vs C++         PyCUDA vs Python         Tiempo PyCUDA / CUDA C
                        calculo  con copias     calculo   con copias        calculo      con copias
-  media 3x3              54.1x        6.1x    13269.8x      1366.8x           1.03            1.12
-  nitidez 3x3            53.2x        6.0x    15830.1x      1719.3x           1.03            1.06
-  laplaciano 3x3         54.8x        6.2x    13754.7x      1457.2x           1.02            1.09
+  media 3x3              53.1x        6.0x    13127.4x      1496.0x           1.02            1.02
+  nitidez 3x3            53.9x        6.1x    13925.0x      1579.6x           1.02            1.02
+  laplaciano 3x3         53.5x        6.1x    16376.4x      1775.3x           1.03            1.07
 
   EXPERIMENTO 2 - Tamano de la imagen (media 9x9, 256 hilos)
                      ---- Secuencial ----   --- GPU solo calculo ---   ---------- GPU con copias ----------
   Prueba             C++ (ms)  Python (ms)       CUDA C       PyCUDA       CUDA C     PyCUDA     In/Out   Igual Py/PyC
   ------------------------------------------------------------------------------------------------------------------------------
-  2000x2000            228.02      55749.4        2.157        2.211         7.42       7.77      14.60          SI/SI
-  4000x4000            931.23    NO COMPL.        8.520        8.600        28.58      30.07      52.22           -/SI
-  6000x6000           2180.87    NO COMPL.       19.308       19.506        64.07      66.63     117.96           -/SI
+  2000x2000            233.06      66549.1        2.152        2.212         7.33       7.78      15.60          SI/SI
+  4000x4000            914.14    NO COMPL.        8.530        8.603        28.51      30.09      51.67           -/SI
+  6000x6000           2051.34    NO COMPL.       19.339       19.387        63.87      65.74     115.17           -/SI
   Aceleracion               CUDA C vs C++         PyCUDA vs Python         Tiempo PyCUDA / CUDA C
                        calculo  con copias     calculo   con copias        calculo      con copias
-  2000x2000             105.7x       30.7x    25217.8x      7175.5x           1.02            1.05
-  4000x4000             109.3x       32.6x           -            -           1.01            1.05
-  6000x6000             113.0x       34.0x           -            -           1.01            1.04
+  2000x2000             108.3x       31.8x    30086.3x      8559.1x           1.03            1.06
+  4000x4000             107.2x       32.1x           -            -           1.01            1.06
+  6000x6000             106.1x       32.1x           -            -           1.00            1.03
 
   EXPERIMENTO 3 - Tamano de la mascara (imagen 4000x4000, 256 hilos)
                      ---- Secuencial ----   --- GPU solo calculo ---   ---------- GPU con copias ----------
   Prueba             C++ (ms)  Python (ms)       CUDA C       PyCUDA       CUDA C     PyCUDA     In/Out   Igual Py/PyC
   ------------------------------------------------------------------------------------------------------------------------------
-  media 3x3            148.35      34593.8        2.533        2.607        22.71      25.31      57.08          SI/SI
-  media 9x9            958.27    NO COMPL.        8.515        8.600        28.79      30.07      52.22           -/SI
-  media 21x21         5393.39    NO COMPL.       42.913       43.984        64.28      65.87      87.75           -/SI
+  media 3x3            137.68      34222.2        2.536        2.607        22.50      22.88      43.92          SI/SI
+  media 9x9            953.84    NO COMPL.        8.521        8.603        28.45      30.09      51.67           -/SI
+  media 21x21         5225.36    NO COMPL.       42.859       42.519        63.01      64.13      85.30           -/SI
   Aceleracion               CUDA C vs C++         PyCUDA vs Python         Tiempo PyCUDA / CUDA C
                        calculo  con copias     calculo   con copias        calculo      con copias
-  media 3x3              58.6x        6.5x    13269.8x      1366.8x           1.03            1.11
-  media 9x9             112.5x       33.3x           -            -           1.01            1.04
-  media 21x21           125.7x       83.9x           -            -           1.02            1.02
+  media 3x3              54.3x        6.1x    13127.4x      1496.0x           1.03            1.02
+  media 9x9             111.9x       33.5x           -            -           1.01            1.06
+  media 21x21           121.9x       82.9x           -            -           0.99            1.02
 
   EXPERIMENTO 1 - Tipo de filtro - RESOLUCION MENOR COMUN (imagen 500x500, 256 hilos)
                      ---- Secuencial ----   --- GPU solo calculo ---   ---------- GPU con copias ----------
   Prueba             C++ (ms)  Python (ms)       CUDA C       PyCUDA       CUDA C     PyCUDA     In/Out   Igual Py/PyC
   ------------------------------------------------------------------------------------------------------------------------------
-  media 3x3              2.45        886.5        0.043        0.077         0.63       0.71       1.42          SI/SI
-  nitidez 3x3            2.11        906.5        0.044        0.080         0.65       0.71       1.45          SI/SI
-  laplaciano 3x3         2.61       1210.7        0.043        0.080         0.59       0.76       1.40          SI/SI
+  media 3x3              2.51        513.4        0.041        0.075         0.53       0.73       1.43          SI/SI
+  nitidez 3x3            2.06        515.4        0.042        0.080         0.54       0.71       1.44          SI/SI
+  laplaciano 3x3         2.06        528.3        0.041        0.068         0.54       0.67       1.38          SI/SI
   Aceleracion               CUDA C vs C++         PyCUDA vs Python         Tiempo PyCUDA / CUDA C
                        calculo  con copias     calculo   con copias        calculo      con copias
-  media 3x3              57.4x        3.9x    11487.6x      1255.5x           1.81            1.12
-  nitidez 3x3            48.3x        3.2x    11353.7x      1282.6x           1.83            1.09
-  laplaciano 3x3         60.9x        4.4x    15136.9x      1601.6x           1.87            1.27
+  media 3x3              61.4x        4.7x     6880.3x       704.5x           1.82            1.37
+  nitidez 3x3            48.6x        3.8x     6463.3x       730.3x           1.88            1.32
+  laplaciano 3x3         50.2x        3.8x     7784.3x       792.2x           1.65            1.24
 
   EXPERIMENTO 3 - Tamano de la mascara - RESOLUCION MENOR COMUN (imagen 500x500, 256 hilos)
                      ---- Secuencial ----   --- GPU solo calculo ---   ---------- GPU con copias ----------
   Prueba             C++ (ms)  Python (ms)       CUDA C       PyCUDA       CUDA C     PyCUDA     In/Out   Igual Py/PyC
   ------------------------------------------------------------------------------------------------------------------------------
-  media 9x9             15.70       9714.9        0.141        0.168         0.71       0.81       1.01          SI/SI
-  media 21x21           83.26      28028.3        0.635        0.648         1.19       1.21       1.69          SI/SI
+  media 9x9             15.77       3219.9        0.141        0.165         0.63       0.77       1.04          SI/SI
+  media 21x21           81.96      16517.7        0.628        0.652         1.18       1.20       1.72          SI/SI
   Aceleracion               CUDA C vs C++         PyCUDA vs Python         Tiempo PyCUDA / CUDA C
                        calculo  con copias     calculo   con copias        calculo      con copias
-  media 9x9             111.0x       22.2x    57926.1x     12016.2x           1.19            1.14
-  media 21x21           131.1x       69.8x    43240.8x     23250.0x           1.02            1.01
+  media 9x9             111.8x       24.9x    19557.3x      4157.7x           1.17            1.22
+  media 21x21           130.6x       69.4x    25318.3x     13727.7x           1.04            1.02
 
   EXPERIMENTO 4 - Hilos por bloque (media 9x9, imagen 4000x4000; solo CUDA C y PyCUDA)
   Hilos/bloque      CUDA C calc  PyCUDA calc  CV PyCUDA    CUDA C total  PyCUDA total     In/Out
   ----------------------------------------------------------------------------------------------
-  128 hilos               8.621        8.693      0.15%           35.07         30.09      54.72
-  256 hilos               8.515        8.600      0.13%           30.08         30.07      52.22
-  512 hilos               8.580        8.668      0.32%           29.53         30.17      52.62
+  128 hilos               8.621        8.694      0.27%           28.58         29.15      50.16
+  256 hilos               8.528        8.603      0.17%           28.45         30.09      51.67
+  512 hilos               8.623        8.672      0.28%           28.55         29.18      50.18
 
   RESUMEN
-  CUDA C fue entre 48.3 y 131.1 veces mas rapido que C++ calculando, y entre 3.2 y 83.9 con las copias.
-  PyCUDA fue entre 11354 y 57926 veces mas rapido que Python calculando, y entre 1256 y 23250 con las copias.
+  CUDA C fue entre 48.6 y 130.6 veces mas rapido que C++ calculando, y entre 3.8 y 82.9 con las copias.
+  PyCUDA fue entre 6463 y 30086 veces mas rapido que Python calculando, y entre 705 y 13728 con las copias.
   Python secuencial NO COMPLETADO (sin aceleracion, no se estima):
       media 9x9 4000x4000: se detuvo a los 120 s por superar el limite de 120 s por corrida
       media 9x9 6000x6000: se detuvo a los 120 s por superar el limite de 120 s por corrida

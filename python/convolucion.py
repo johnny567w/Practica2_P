@@ -20,10 +20,9 @@ F32 = np.float32
 
 
 # ----------------------------------------------------------------------------------------------
-# Imagenes: lectura, escala de grises y escritura (sin bibliotecas externas)
+# Imagenes: lectura, escala de grises y escritura
 # ----------------------------------------------------------------------------------------------
 def leer_imagen(ruta):
-    """Lee PGM (P5), PPM (P6) o BMP de 24 bits. Devuelve uint8 (alto, ancho) o (alto, ancho, 3)."""
     datos = Path(ruta).read_bytes()
     if datos[:2] in (b"P5", b"P6"):
         canales = 1 if datos[:2] == b"P5" else 3
@@ -55,11 +54,10 @@ def leer_imagen(ruta):
             linea = np.frombuffer(datos, np.uint8, ancho * 3, offset + y * fila).reshape(ancho, 3)
             img[abs(alto) - 1 - y if alto > 0 else y] = linea[:, ::-1]  # BGR -> RGB, de abajo hacia arriba
         return img
-    raise ValueError(f"{ruta}: formato no soportado (use PGM, PPM o BMP)")
+    raise ValueError(f"{ruta}: formato no soportado")
 
 
 def a_grises(img):
-    """Escala de grises por luminancia: Y = 0.299 R + 0.587 G + 0.114 B (igual que la practica 01)."""
     if img.ndim == 2:
         return img
     y = 0.299 * img[..., 0] + 0.587 * img[..., 1] + 0.114 * img[..., 2]
@@ -111,14 +109,11 @@ def mascara(filtro, k=3):
 
 
 def a_8bits(valores, filtro):
-    """Igual que toDisplayValue en C: el laplaciano en valor absoluto, redondeo y recorte a 0..255."""
     v = np.abs(valores) if filtro == "laplaciano" else valores
     return np.clip(np.floor(v.astype(F32) + F32(0.5)), 0, 255).astype(np.uint8)
 
 
 def tolerancia(m, maximo_entrada=255.0):
-    """Cota del error de redondeo de una suma de k*k productos en float32, para dos versiones:
-    tol = 2 * gamma(k^2) * 255 * suma|coef|, con gamma(n) = n*u / (1 - n*u) y u = 2^-24."""
     u, n = 2.0 ** -24, m.size
     gamma = n * u / (1.0 - n * u)
     return 2.0 * gamma * maximo_entrada * float(np.abs(m.astype(np.float64)).sum())
@@ -136,7 +131,6 @@ def errores(referencia, valores):
 # Convolucion secuencial en Python: recorridos explicitos de pixeles y coeficientes
 # ----------------------------------------------------------------------------------------------
 class Interrumpida(Exception):
-    """La convolucion en Python supero el tiempo limite y se detuvo."""
 
     def __init__(self, segundos, filas):
         super().__init__(f"interrumpida a los {segundos:.1f} s ({filas} filas)")
@@ -144,14 +138,7 @@ class Interrumpida(Exception):
 
 
 def convolucion_python(img, m, limite_s=None):
-    """Convolucion 2D con cuatro ciclos anidados, en float32 como en C.
-
-    - Cada producto y cada suma se hacen con numpy.float32 (mismo redondeo que float en C, sin FMA).
-    - Las entradas son enteros de 0 a 255 (imagen de 8 bits), exactos en float32.
-    - Los vecinos fuera de la imagen se saltan, que equivale a sumarlos como cero.
-    - NumPy solo se usa para guardar la salida; el calculo lo hacen los ciclos.
-    Si se da limite_s y se supera, se lanza Interrumpida con el tiempo transcurrido.
-    """
+    """Convolucion secuencial en Python, recorriendo cada pixel y cada coeficiente."""
     alto, ancho = img.shape
     k = m.shape[0]
     r = k // 2
@@ -185,8 +172,6 @@ def convolucion_python(img, m, limite_s=None):
 # Version C/C++ y CUDA C de la practica 01 (para comparar)
 # ----------------------------------------------------------------------------------------------
 def ejecutar_c(version, ruta_pgm, filtro="media", k=3, hilos=256, coef=None):
-    """Ejecuta bin/filter.exe (practica 01) y devuelve su salida en float32, antes de pasar a 8 bits.
-    version: 'c' (C++ secuencial) o 'cuda' (CUDA C)."""
     exe = BIN / "filter.exe"
     if not exe.exists():
         raise RuntimeError("Falta bin\\filter.exe: ejecute primero build.bat")
@@ -209,7 +194,6 @@ def ejecutar_c(version, ruta_pgm, filtro="media", k=3, hilos=256, coef=None):
 # Entorno de ejecucion
 # ----------------------------------------------------------------------------------------------
 def entorno(pc=None):
-    """CPU, nucleos, RAM, GPU, memoria de GPU, sistema operativo y versiones de las herramientas."""
     info = {}
     try:
         import winreg

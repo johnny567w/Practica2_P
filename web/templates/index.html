@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convolución en GPU</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+</head>
+<body>
+<header>
+  <h1>Convolución de imágenes en GPU</h1>
+  <p>Servicio web en Python · PyCUDA · kernel propio de la práctica 02</p>
+  <p id="estado" class="estado">Consultando el estado de la GPU…</p>
+</header>
+
+<main>
+  <form id="formulario">
+    <label>Imagen (PNG, JPEG, BMP o PGM · hasta {{ max_mb }} MB y {{ max_lado }}×{{ max_lado }} píxeles)
+      <input type="file" id="imagen" name="imagen" accept=".png,.jpg,.jpeg,.bmp,.pgm,image/*" required>
+    </label>
+    <div class="fila">
+      <label>Filtro
+        <select id="filtro" name="filtro">
+          <option value="media">Media</option>
+          <option value="nitidez">Nitidez (3×3)</option>
+          <option value="laplaciano">Laplaciano (3×3)</option>
+        </select>
+      </label>
+      <label id="grupo-k">Tamaño de máscara
+        <select id="k" name="k">
+          {% for m in mascaras %}<option value="{{ m }}">{{ m }}×{{ m }}</option>{% endfor %}
+        </select>
+      </label>
+      <button type="submit" id="boton">Procesar</button>
+    </div>
+    <p id="mensaje" class="mensaje" role="status"></p>
+  </form>
+
+  <section class="imagenes">
+    <figure><figcaption>Original</figcaption><img id="vista-original" alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></figure>
+    <figure><figcaption>Resultado <a id="descargar" class="oculto" href="#">Descargar</a></figcaption>
+      <img id="vista-resultado" alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></figure>
+  </section>
+
+  <section id="tiempos" class="oculto">
+    <h2>Tiempos de esta solicitud</h2>
+    <p class="nota" id="resumen"></p>
+    <table>
+      <thead><tr><th>Etapa</th><th>Tiempo</th><th>Qué incluye</th></tr></thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </section>
+</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

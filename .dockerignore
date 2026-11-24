@@ -1,0 +1,7 @@
+*
+!python/convolucion.py
+!python/conv_pycuda.py
+!python/kernel_convolucion.cu
+!web/
+web/__pycache__
+web/resultados
